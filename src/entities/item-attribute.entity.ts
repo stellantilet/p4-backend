@@ -1,4 +1,4 @@
-import { ItemAttributeDisplayEnum } from '../constants/enums';
+import { ItemAttributeDisplayEnum } from '../config/enums';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Item } from './item.entity';
 

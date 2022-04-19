@@ -5,6 +5,7 @@ import { createConnection } from 'typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import configuration from './config/configuration';
+import { ContractsModule } from './contracts/contracts.module';
 import { AuthUsersModule } from './modules/auth/auth-users.module';
 import { ItemsModule } from './modules/items/items.module';
 import { UsersModule } from './modules/users/users.module';
@@ -25,6 +26,7 @@ import { UsersModule } from './modules/users/users.module';
         return connection;
       },
     }),
+    ContractsModule,
     UsersModule,
     AuthUsersModule,
     ItemsModule,

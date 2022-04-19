@@ -1,6 +1,7 @@
 import { join } from 'path';
 export default () => ({
   port: parseInt(process.env.PORT, 10) || 8000,
+  chainId: process.env.CHAIN_ID || '0x61',
   database: {
     type: process.env.TYPEORM_CONNECTION,
     host: process.env.TYPEORM_HOST,

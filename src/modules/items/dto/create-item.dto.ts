@@ -5,10 +5,11 @@ import {
   IsHexColor,
   IsNotEmpty,
   IsNumber,
+  IsNumberString,
   IsString,
   IsUrl,
 } from 'class-validator';
-import { ItemAttributeDisplayEnum } from '../../../constants/enums';
+import { ItemAttributeDisplayEnum } from '../../../config/enums';
 
 export class ItemAttributeDto {
   @IsEnum(ItemAttributeDisplayEnum)
@@ -34,9 +35,11 @@ export class ItemAttributeDto {
 }
 
 export class CreateItemDto {
+  @IsNumberString()
+  id?: string;
+
   @IsString()
-  @IsNotEmpty()
-  name: string;
+  name?: string;
 
   @IsUrl()
   image?: string;
@@ -59,6 +62,6 @@ export class CreateItemDto {
   @IsArray()
   attributes: ItemAttributeDto[];
 
-  @IsNumber()
-  ownerId: number;
+  @IsString()
+  ownerAddress?: string;
 }

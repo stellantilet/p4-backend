@@ -1,5 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ContractsService } from 'src/contracts/contracts.service';
 import { ObjectLiteral, Repository } from 'typeorm';
 import { ItemAttribute } from '../../entities/item-attribute.entity';
 import { Item } from '../../entities/item.entity';
@@ -15,6 +16,9 @@ export class ItemsService extends PaginationService {
 
     @InjectRepository(ItemAttribute)
     private attributeRepository: Repository<ItemAttribute>,
+
+    @Inject(ContractsService)
+    private contractsService: ContractsService,
   ) {
     super();
   }
@@ -24,20 +28,29 @@ export class ItemsService extends PaginationService {
   }
 
   async create(data: CreateItemDto): Promise<Item> {
-    const { attributes: attributesDto, ...rest } = data;
+    const { attributes: attributesDto, id, ...rest } = data;
+
+    const contract = this.contractsService.getERC721P4Contract();
+    const ownerAddress = await contract.ownerOf(id);
+
     const itemData = {
       ...rest,
+      id,
+      ownerAddress,
     };
+
     const ret = this.repository.create(itemData);
     const item = await this.repository.save(ret);
 
-    await Promise.all(
-      attributesDto.map(async (attribute) => {
-        attribute.itemId = item.id;
-        const data = this.attributeRepository.create(attribute);
-        return await this.attributeRepository.save(data);
-      }),
-    );
+    if (attributesDto) {
+      await Promise.all(
+        attributesDto.map(async (attribute) => {
+          attribute.itemId = item.id;
+          const data = this.attributeRepository.create(attribute);
+          return await this.attributeRepository.save(data);
+        }),
+      );
+    }
     const itemRet = await this.repository.findOne({
       where: { id: item.id },
       relations: ['attributes'],

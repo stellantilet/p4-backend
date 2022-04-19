@@ -41,6 +41,9 @@ export class Item {
   @Column({ nullable: true })
   rarity: number;
 
+  @Column({ nullable: true })
+  ownerAddress: string;
+
   @CreateDateColumn()
   createdAt: Date;
 
